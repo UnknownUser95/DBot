@@ -1,11 +1,13 @@
 package net.unknownuser.dbot;
 
+import java.awt.*;
 import java.io.*;
 import java.nio.file.*;
 
 import javax.security.auth.login.*;
 
 import org.javacord.api.*;
+import org.javacord.api.entity.message.embed.*;
 
 public class DBotTest {
 	// https://discord.com/api/oauth2/authorize?client_id=1012393292857622529&scope=applications.commands%20bot&permissions=8
@@ -21,30 +23,18 @@ public class DBotTest {
 		}
 	}
 	
-	public static void main(String[] args) throws LoginException {
+	public static void main(String[] args) {
 		
 		DiscordApi api = new DiscordApiBuilder().setToken(loadToken()).login().join();
 		
-		api.addMessageCreateListener(event -> {
-//			if(event.getMessageContent().equalsIgnoreCase("!ping")) {
-//				event.getChannel().sendMessage("Pong!");
-//			}
-			System.out.printf("%s: %s @%s%n", event.getMessageAuthor(), event.getMessageContent(), event.getChannel().getType());
-		});
-		
 		System.out.println("invite: " + api.createBotInvite());
 		
-//		JDABuilder builder = JDABuilder.createDefault(API_TOKEN);
-//    
-//    // Disable parts of the cache
-//    builder.disableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.VOICE_STATE);
-//    // Enable the bulk delete event
-//    builder.setBulkDeleteSplittingEnabled(false);
-//    // Disable compression (not recommended)
-//    builder.setCompression(Compression.NONE);
-//    // Set activity (like "playing Something")
-//    builder.setActivity(Activity.watching("TV"));
-//    
-//    builder.build();
+		api.addMessageCreateListener(event -> {
+			if(event.getMessageAuthor().getId() != api.getClientId()) {
+				event.getChannel().sendMessage(new EmbedBuilder().setTitle("neato").setDescription("magneto").setColor(Color.ORANGE));
+			}
+			
+//			System.out.printf("%s: %s @%s%n", event.getMessageAuthor(), event.getMessageContent(), event.getChannel());
+		});
 	}
 }
