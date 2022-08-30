@@ -1,10 +1,6 @@
 package net.unknownuser.dbot;
 
 import java.awt.*;
-import java.io.*;
-import java.nio.file.*;
-
-import javax.security.auth.login.*;
 
 import org.javacord.api.*;
 import org.javacord.api.entity.message.embed.*;
@@ -15,19 +11,13 @@ public class DBotTest {
 	// numbers are application ID
 	// permissions can be found under bot -> permissions
 	
-	public static String loadToken() {
-		try {
-			return Files.readAllLines(Path.of("TOKEN")).get(0);
-		} catch(IOException exc) {
-			return "";
-		}
-	}
-	
 	public static void main(String[] args) {
 		
-		DiscordApi api = new DiscordApiBuilder().setToken(loadToken()).login().join();
+		Config config = new Config();
 		
-		System.out.println("invite: " + api.createBotInvite());
+		DiscordApi api = new DiscordApiBuilder().setToken((String) config.get("token")).login().join();
+		
+		System.out.printf("invite: \"%s\" %n", api.createBotInvite());
 		
 		api.addMessageCreateListener(event -> {
 			if(event.getMessageAuthor().getId() != api.getClientId()) {
