@@ -5,6 +5,6 @@ target
 .classpath
 .project
 build.xml
-TOKEN
+settings.json
 
 exports

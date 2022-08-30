@@ -2,7 +2,6 @@ package net.unknownuser.dbot;
 
 import java.awt.*;
 import java.io.*;
-import java.nio.file.*;
 import java.util.concurrent.*;
 
 import org.javacord.api.*;
@@ -15,21 +14,15 @@ public class DBotTest {
 	// numbers are application ID
 	// permissions can be found under bot -> permissions
 	
-	private static DiscordApi api;
-	
-	public static String loadToken() {
-		try {
-			return Files.readAllLines(Path.of("TOKEN")).get(0);
-		} catch(IOException exc) {
-			return "";
-		}
-	}
+	private static DiscordApi api = null;
 	
 	public static void main(String[] args) {
 		
-		api = new DiscordApiBuilder().setToken(loadToken()).login().join();
+		Config config = new Config();
 		
-		System.out.println("invite: " + api.createBotInvite());
+		api = new DiscordApiBuilder().setToken((String) config.get("token")).login().join();
+		
+		System.out.printf("invite: \"%s\" %n", api.createBotInvite());
 		
 		new Thread(DBotTest::cliStart).start();
 		
@@ -44,7 +37,8 @@ public class DBotTest {
 				}
 				case "neato" -> event.getChannel().sendMessage(new EmbedBuilder().setTitle("magneto").setColor(Color.ORANGE));
 				case "hi" -> event.getChannel().sendMessage("hello!");
-				default -> { /* any message without purpose */ }
+				default -> {
+					/* any message without purpose */ }
 				}
 				
 				System.out.printf("%s: %s @%s%n", event.getMessageAuthor(), event.getMessageContent(), event.getChannel());
@@ -58,7 +52,7 @@ public class DBotTest {
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
 			String line;
 			while(!(line = br.readLine()).equals("exit")) {
-				switch(line) {
+				switch (line) {
 				default -> System.out.println("unknown command");
 				}
 			}
