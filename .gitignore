@@ -8,3 +8,5 @@ build.xml
 settings.json
 
 exports
+
+*.jar

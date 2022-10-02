@@ -14,16 +14,12 @@ public class DBotTest {
 	// numbers are application ID
 	// permissions can be found under bot -> permissions
 	
-	private static DiscordApi api = null;
-	
 	public static void main(String[] args) {
-		
 		Config config = new Config();
 		
-		api = new DiscordApiBuilder().setToken((String) config.get("token")).login().join();
-		
-		System.out.printf("invite: \"%s\" %n", api.createBotInvite());
-		
+		DiscordApi api = new DiscordApiBuilder().setToken((String) config.get("token")).login().join();
+		System.out.printf("invite: \"%s\"%n", api.createBotInvite());
+		/*
 		new Thread(DBotTest::cliStart).start();
 		
 		api.addMessageCreateListener(event -> {
@@ -37,8 +33,7 @@ public class DBotTest {
 				}
 				case "neato" -> event.getChannel().sendMessage(new EmbedBuilder().setTitle("magneto").setColor(Color.ORANGE));
 				case "hi" -> event.getChannel().sendMessage("hello!");
-				default -> {
-					/* any message without purpose */ }
+				default -> {}
 				}
 				
 				System.out.printf("%s: %s @%s%n", event.getMessageAuthor(), event.getMessageContent(), event.getChannel());
@@ -46,20 +41,39 @@ public class DBotTest {
 		});
 		
 		System.out.println("DBot started");
+		*/
+		
+		DMChat chat = new DMChat();
+		chat.startChat(api, "744333358917746738");
+		
+		logoff(api);
 	}
 	
-	private static void cliStart() {
-		try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
-			String line;
-			while(!(line = br.readLine()).equals("exit")) {
-				switch (line) {
-				default -> System.out.println("unknown command");
-				}
+//	private static void cliStart() {
+//		try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
+//			String line;
+//			while(!(line = br.readLine()).equals("exit")) {
+//				switch (line) {
+//				default -> System.out.println("unknown command");
+//				}
+//			}
+//			
+//			api.disconnect();
+//		} catch(IOException exc) {
+//			System.err.println("buffered reader error");
+//		}
+//	}
+	
+	private static void logoff(DiscordApi api) {
+		boolean isDisconnected = false;
+		while(!isDisconnected) {
+			try {
+				api.disconnect().get();
+				isDisconnected = true;
+			} catch(InterruptedException | ExecutionException exc) {
+				System.err.println("error suring log out");
 			}
-			
-			api.disconnect();
-		} catch(IOException exc) {
-			System.err.println("buffered reader error");
 		}
+		System.out.println("log out successful");
 	}
 }
